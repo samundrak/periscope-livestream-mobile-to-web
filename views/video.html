@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Periscope</title>
+		<script type="text/javascript" src="javascripts/bower_components/jquery/dist/jquery.js"></script>
+		<script type="text/javascript" src="javascripts/src/purl.js"></script>
+		<!-- //<script type="text/javascript" src="javascripts/src/flashlsAPI.js"></script> -->
+		<script type="text/javascript" src="libs/ParsedQueryString.js"></script>
+
+<script type="text/javascript" src="player/flowplayer-3.2.12.min.js"></script>
+<script type="text/javascript" src="libs/JSLoaderFragment.js"></script>
+<script type="text/javascript" src="libs/JSLoaderPlaylist.js"></script>
+<script type="text/javascript" src="libs/js2flash.js"></script>
+<!-- <script type="text/javascript" src="libs/canvas.js"></script> -->
+<!-- <script type="text/javascript" src="libs/metrics.js"></script> -->
+<!-- <script type="text/javascript" src="libs/jsonpack.js"></script> -->
+
+
+ 
+
+</head>
+
+
+
+<script type="text/javascript" src="libs/swfobject.js"></script>
+<script type="text/javascript" src="libs/ParsedQueryString.js"></script>
+<script type="text/javascript">
+var player = null;
+
+function loadStream(url) {
+  player.setMediaResourceURL(url);
+}
+
+
+
+// function listStreams(list, container) {
+//   for(var i=0; i<list.length; i++) { var entry = document.createElement("li");
+//     //entry.innerHTML = "<a href=" + getlink(list[i].file) + ">" +list[i].title+"</a>";
+//     entry.innerHTML = "<a href='#' onclick='return loadStream(\""+list[i].file+"\")'>"+list[i].title+"</a>";
+//     document.getElementById(container).appendChild(entry);
+//   }
+//   //loadStream(list[0].file);
+// }
+
+
+        function jsbridge(playerId, event, data) {
+          if (player == null) {
+            player = document.getElementById(playerId);
+          }
+          switch(event) {
+            case "onJavaScriptBridgeCreated":
+              // listStreams(teststreams,"streamlist");
+              break;
+             case "timeChange":
+             case "timeupdate":
+             case "progress":
+               break;
+             default:
+              console.log(event, data);
+            }
+        }
+
+            // Collect query parameters in an object that we can
+            // forward to SWFObject:
+
+            var pqs = new ParsedQueryString();
+            var parameterNames = pqs.params(false);
+
+            var parameters = {
+            	src : encodeURIComponent($.url().param('search')),
+                // src: "https://replay.periscope.tv/SWJx1njy_Huk7Jo0zmJ-6wDk_kGyMeqodS_k6aVD-EWQX4BxpE-D-sTORleXuWy4X8ukqaAtFTyFCXHwoyLFSQ==/playlist.m3u8",
+                //src: "http://localhost:8082/playlists/test_001/stream.m3u8",
+                autoPlay: "true",
+                verbose: true,
+                controlBarAutoHide: "true",
+                controlBarPosition: "bottom",
+                poster: "images/poster.png",
+                javascriptCallbackFunction: "jsbridge",
+                plugin_hls: "player/flashlsOSMF.swf",
+                hls_minbufferlength: -1,
+                hls_maxbufferlength: 30,
+                hls_lowbufferlength: 3,
+                hls_seekmode: "KEYFRAME",
+                hls_startfromlevel: -1,
+                hls_seekfromlevel: -1,
+                hls_live_flushurlcache: false,
+                hls_info: true,
+                hls_debug: false,
+                hls_debug2: false,
+                hls_warn: true,
+                hls_error: true,
+                hls_fragmentloadmaxretry : -1,
+                hls_manifestloadmaxretry : -1,
+                hls_capleveltostage : false,
+                hls_maxlevelcappingmode : "downscale"
+            };
+
+            // for (var i = 0; i < parameterNames.length; i++) {
+            //     var parameterName = parameterNames[i];
+            //     parameters[parameterName] = pqs.param(parameterName) ||
+            //     parameters[parameterName];
+            // }
+
+            var wmodeValue = "direct";
+            var wmodeOptions = ["direct", "opaque", "transparent", "window"];
+            if (parameters.hasOwnProperty("wmode"))
+            {
+                if (wmodeOptions.indexOf(parameters.wmode) >= 0)
+                {
+                    wmodeValue = parameters.wmode;
+                }
+                delete parameters.wmode;
+            }
+
+            // Embed the player SWF:
+            swfobject.embedSWF(
+                "player/GrindPlayer.swf"
+                , "GrindPlayer"
+                , 640
+                , 480
+                , "10.1.0"
+                , "expressInstall.swf"
+                , parameters
+                , {
+                    allowFullScreen: "true",
+                    wmode: wmodeValue
+                }
+                , {
+                    name: "GrindPlayer"
+                }
+            );
+
+        </script>
+        <div id="customButtons"></div>
+ 
+        <table width="100%" border="0" cellspacing="5">
+            <tr>
+                <td>
+                    <div id="GrindPlayer">
+                        <p>
+                            <!-- Alternative content -->
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        </table>
+<!-- Check with your own Playlist ! <a href="http://kb2.adobe.com/cps/142/tn_14213.html">beware of Cross Domain Policy</a><br> -->
+<!-- <input id="userInput" value="https://replay.periscope.tv/SWJx1njy_Huk7Jo0zmJ-6wDk_kGyMeqodS_k6aVD-EWQX4BxpE-D-sTORleXuWy4X8ukqaAtFTyFCXHwoyLFSQ==/playlist.m3u8" size="80"> <button onclick="userSubmit()">Play</button><br> -->
+<script type="text/javascript" src="http://www.flashls.org/playlists/streams.js"></script>
+<script type="text/javascript" src="http://www.flashls.org/streams.js"></script>
+</html>
