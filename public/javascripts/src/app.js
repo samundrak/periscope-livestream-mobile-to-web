@@ -4,12 +4,16 @@ var socket = io(window.location.hostname + port + '/stream');
 var streamer = [];
 
 // $(document).ready(function() {
-    socket.emit('start', {});
+socket.emit('start', {});
+socket.on('onStart', function(data) {
+    alert()
+});
 // });
 socket.on('newStream', function(data) {
+	console.log(data);
     if (streamer.indexOf(data.url) === 0) return;
 
-console.log(data);
+    console.log(data);
     $("#frames").html('');
     var frm = '<iframe   src="video?search=' + data.url + '" width="700px" height="530px"></iframe>';
     $("#frames").append(frm);

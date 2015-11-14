@@ -13,6 +13,7 @@
     "express": "~4.12.2",
     "get-urls": "^5.0.0",
     "jade": "~1.9.2",
+    "mongoose": "^4.2.5",
     "morgan": "~1.5.1",
     "request": "^2.65.0",
     "serve-favicon": "~2.2.0",
