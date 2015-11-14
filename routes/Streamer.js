@@ -2,19 +2,19 @@ var Stream = require('user-stream');
 var getUrl = require('get-urls');
 var url = require('url');
 var request = require('request');
-var fs =  require('fs');
+var fs = require('fs');
 var appRoot = require('app-root-path');
+// var StreamModel = require('../model/Stream.js')();
 
 module.exports = function stream(socket) {
 
-var fsdata = JSON.parse(fs.readFileSync(appRoot+'/data.json','utf8'));
- 
-//  return;
+    var fsdata = JSON.parse(fs.readFileSync(appRoot + '/data.json', 'utf8'));
+
     var stream = new Stream({
-        consumer_key: fsdata.consumer_key || 'wNrzaX25KZo54rP4XDwOnOFKm',
-        consumer_secret: fsdata.consumer_secret || 'MNWJ4o6FiWYroOa4J10s75HKIpYZjBigPzIF6D328jm6AtoLEG',
-        access_token_key: fsdata.access_token_key || '1174612758-92zu8wQNQXuG1NaBEWBkO2TTu3D3SCruDgENfs3',
-        access_token_secret: fsdata.access_token_secret || 'fw0MshFaLXV5yzV6rpDJQX93f65ru5btpg9uRvRcULDf4'
+        consumer_key: fsdata.consumer_key || '4ID46TjrWrA7jEaNgpnymHn6u',
+        consumer_secret: fsdata.consumer_secret || 'eECTQ9Iv7eNMeuLRGguyWIOfPBTWBO0bS2lJ20q4px1A0IeBVh',
+        access_token_key: fsdata.access_token_key || '1322975444-6biTKZfNxzfnERxLdymtDOmT6InsoYgRRgAUj1v',
+        access_token_secret: fsdata.access_token_secret || 'SJd0ISk06YFWU3dJYu6IUkmXjLYeLUA1Vh974CVKnFsaZ'
     });
 
     // * - data
@@ -27,16 +27,10 @@ var fsdata = JSON.parse(fs.readFileSync(appRoot+'/data.json','utf8'));
     //create stream
     stream.stream();
     socket.of('/stream').on('connection', function(client) {
-        console.log('oe')
-        client.on('start', console.log);
+
         //stream JSON data
         stream.on('data', function(data) {
-            console.log('Data:');
-            console.log(data);
-
             if (data.source != '<a href="https://periscope.tv" rel="nofollow">Periscope</a>') return;
-
-
             var urls = getUrl(data.text);
             var uri = undefined;
             urls.forEach(function(post, index) {
@@ -66,6 +60,7 @@ var fsdata = JSON.parse(fs.readFileSync(appRoot+'/data.json','utf8'));
                         client.broadcast.emit('newStream', {
                             url: streamUrl
                         });
+                        fs.writeFile(appRoot + '/url.json', '{"url":"' + streamUrl + '","token":"' + token + '"}');
                         console.log(streamUrl);
                     });
                     // Show the HTML for the Google homepage. 
@@ -74,6 +69,50 @@ var fsdata = JSON.parse(fs.readFileSync(appRoot+'/data.json','utf8'));
                 }
             });
         });
+        client.on('start', function(data) {
+            fs.exists(appRoot + '/url.json', function(err) {
+                if (!err) return;
+
+                try {
+
+                    var url = JSON.parse(fs.readFileSync(appRoot + '/url.json', 'utf8'));
+                } catch (err) {
+                    return;
+                }
+
+
+                if (!url.hasOwnProperty('token')) return;
+                try {
+                    var token = url.token;
+                    var apiurl = 'https://api.periscope.tv/api/v2/getAccessPublic?token=' + token;
+
+                    request(apiurl, function(error, response, body) {
+                        if (error) return;
+
+                        var data = response.request.uri;
+                        var body = JSON.parse(body);
+                        if (body.hasOwnProperty('hls_url')) {
+                            console.log(body.hls_url);
+                            // client.emit('new',{});
+                            client.emit('newStream', {
+                                url: body.hls_url
+                            });
+
+
+                        } else {
+                            console.log('is dead');
+                            client.emit('newStream', {
+                                url: body.hls_url
+                            });
+                        }
+                    });
+                } catch (err) {
+                    console.warn('errrrrrr');
+                }
+            })
+
+        });
+
 
         //incorrect json strings (can't parse to json)
         stream.on('garbage', function(data) {
