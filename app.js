@@ -26,37 +26,10 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-<<<<<<< HEAD
-=======
-// production error handler
-// no stacktraces leaked to user
-
-// function ServerLog(data) {
-// }
->>>>>>> 8370f59d62804952817e57f412029a8fb63bd908
 var listener = app.listen(3000);
 socket = new socket(listener);
 var streamer = require('./routes/Streamer');
 streamer(socket);
-<<<<<<< HEAD
-=======
-// var twitter = require('./routes/twitter');
-// console.log('/')
-// app.use(function(req,res,next){
-// var stream = new Stream({
-//     consumer_key: '4ID46TjrWrA7jEaNgpnymHn6u', //mine
-//     consumer_secret: 'eECTQ9Iv7eNMeuLRGguyWIOfPBTWBO0bS2lJ20q4px1A0IeBVh',
-//     access_token_key: '1322975444-6biTKZfNxzfnERxLdymtDOmT6InsoYgRRgAUj1v',
-//     access_token_secret: 'SJd0ISk06YFWU3dJYu6IUkmXjLYeLUA1Vh974CVKnFsaZ'
-
-// });
-
-// var params = {};
-// create stream
-// stream.stream();
-// twitter(socket, stream);
-// });
->>>>>>> 8370f59d62804952817e57f412029a8fb63bd908
 app.use('/', routes);
 app.use('/users', users);
 app.use(function(err, req, res, next) {
@@ -66,11 +39,6 @@ app.use(function(err, req, res, next) {
         error: {}
     });
 });
-<<<<<<< HEAD
-=======
-// app.listen(3000);
-
->>>>>>> 8370f59d62804952817e57f412029a8fb63bd908
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
     var err = new Error('Not Found');

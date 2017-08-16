@@ -6,10 +6,10 @@ var request = require('request');
 module.exports = function stream(socket) {
 
     var stream = new Stream({
-        consumer_key: '4ID46TjrWrA7jEaNgpnymHn6u',
-        consumer_secret: 'eECTQ9Iv7eNMeuLRGguyWIOfPBTWBO0bS2lJ20q4px1A0IeBVh',
-        access_token_key: '1322975444-6biTKZfNxzfnERxLdymtDOmT6InsoYgRRgAUj1v',
-        access_token_secret: 'SJd0ISk06YFWU3dJYu6IUkmXjLYeLUA1Vh974CVKnFsaZ'
+        consumer_key: '',
+        consumer_secret: '',
+        access_token_key: '',
+        access_token_secret: ''
     });
 
     // * - data
